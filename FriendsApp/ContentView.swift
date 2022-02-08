@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+struct Response: Codable {
+    var results: [User]
+}
 struct ContentView: View {
     @State private var users = [User]()
     
@@ -17,11 +20,13 @@ struct ContentView: View {
                     Text(user.name)
                     Text(user.isActive ? "Online" : "Offline")
                 }
-                
             }
             .task {
                 await loadData()
             }
+//            .overlay {
+//                if users.isFetching { ProgressView() }
+//            }
 
             .navigationTitle("FriendsApp")
         }
@@ -35,17 +40,14 @@ struct ContentView: View {
         
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            
+            print("data is \(data)")
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
 
             print("set decodeingStrategy")
             
-            if let decodedResponse = try? JSONDecoder().decode([User].self, from: data) {
-                print("decoded starts")
-
+            if let decodedResponse = try? decoder.decode([User].self, from: data) {
                 self.users = decodedResponse
-                print("decoded end")
             } else {
                 print("fail to decode")
             }
