@@ -12,6 +12,8 @@ struct ContentView: View {
         Text("Hello, world!")
             .padding()
             .background(.red)
+        
+        Text("Some changes")
     }
 }
 
