@@ -7,17 +7,19 @@
 
 import Foundation
 
-struct User {
-    var id: String
+struct User: Codable {
+    var id: UUID
     var isActive: Bool
     var name: String
-    var age: String
+    var age: Int
     var company: String
     var email: String
     var address: String
     var about: String
-    var registrationDate: Date
+    var registered: Date
     
     var tags: [String]
-    var friends = [Friends]()
+    var friends: [Friends]
 }
+
+
