@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Friends {
-    var id: String
+struct Friends: Codable {
+    var id: UUID
     var name: String
 }
