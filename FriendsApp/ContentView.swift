@@ -7,27 +7,31 @@
 
 import SwiftUI
 
-struct Response: Codable {
-    var results: [User]
-}
+
 struct ContentView: View {
     @State private var users = [User]()
     
     var body: some View {
         NavigationView {
             List(users, id: \.id) { user in
-                VStack(alignment: .leading) {
-                    Text(user.name)
-                    Text(user.isActive ? "Online" : "Offline")
+                NavigationLink {
+                    DetailView(user: user)
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(user.name)
+                        Text(user.isActive ? "Online" : "Offline")
+                    }
                 }
             }
             .task {
-                await loadData()
+                if users.isEmpty {
+                    await loadData()
+                }
             }
-//            .overlay {
-//                if users.isFetching { ProgressView() }
-//            }
-
+            .overlay {
+                if users.isEmpty { ProgressView() }
+            }
+            
             .navigationTitle("FriendsApp")
         }
     }
@@ -43,7 +47,7 @@ struct ContentView: View {
             print("data is \(data)")
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
-
+            
             print("set decodeingStrategy")
             
             if let decodedResponse = try? decoder.decode([User].self, from: data) {
